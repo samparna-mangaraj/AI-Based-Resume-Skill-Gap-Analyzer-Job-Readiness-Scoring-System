@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Enter your skills and analyze your fit across 15 IT job categories.">
+  <title>Dashboard — SkillGap Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ─────────────────────────────── */
+    :root {
+      --bg-primary:   #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary:  #1a1a25;
+      --glass-bg:     rgba(21,21,31,0.75);
+      --glass-border: rgba(255,255,255,0.08);
+      --neon-cyan:    #00f5ff;
+      --neon-purple:  #bf00ff;
+      --neon-pink:    #ff00a8;
+      --neon-green:   #00ff88;
+      --neon-blue:    #0080ff;
+      --text-primary: #ffffff;
+      --text-secondary:#a0a0b0;
+      --text-muted:   #606070;
+      --border-color: #252535;
+      --sidebar-w:    280px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family:'Inter',sans-serif;
+      background:var(--bg-primary);
+      color:var(--text-primary);
+      min-height:100vh;
+      display:flex;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────── */
+    .sidebar {
+      width:var(--sidebar-w);
+      background:var(--glass-bg);
+      backdrop-filter:blur(24px);
+      border-right:1px solid var(--glass-border);
+      padding:32px 20px;
+      display:flex;
+      flex-direction:column;
+      position:fixed;
+      height:100vh;
+      z-index:100;
+      overflow-y:auto;
+    }
+    .logo-wrap { display:flex;align-items:center;gap:12px;padding:0 8px;margin-bottom:40px; }
+    .logo-icon {
+      width:44px;height:44px;
+      background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));
+      border-radius:12px;display:flex;align-items:center;justify-content:center;
+      font-size:20px;box-shadow:0 0 20px rgba(0,245,255,0.35);
+    }
+    .logo-text { font-size:22px;font-weight:800;
+      background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .sidebar-nav { display:flex;flex-direction:column;gap:6px; }
+    .nav-item {
+      display:flex;align-items:center;gap:12px;padding:13px 14px;
+      border-radius:11px;color:var(--text-secondary);text-decoration:none;
+      font-size:14px;font-weight:500;transition:all 0.25s ease;cursor:pointer;
+    }
+    .nav-item:hover { background:rgba(0,245,255,0.07);color:var(--text-primary); }
+    .nav-item.active {
+      background:linear-gradient(135deg,rgba(0,245,255,0.15),rgba(191,0,255,0.1));
+      color:var(--neon-cyan);border:1px solid rgba(0,245,255,0.2);
+    }
+    .nav-icon { font-size:16px;width:22px;text-align:center; }
+
+    .sidebar-footer { margin-top:auto;padding-top:20px;border-top:1px solid var(--glass-border); }
+    .user-badge {
+      display:flex;align-items:center;gap:10px;padding:12px;
+      border-radius:11px;background:var(--bg-secondary);margin-bottom:12px;
+    }
+    .user-avatar {
+      width:36px;height:36px;border-radius:9px;
+      background:linear-gradient(135deg,var(--neon-purple),var(--neon-pink));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:15px;
+    }
+    .user-name { font-size:13px;font-weight:600; }
+    .user-email { font-size:11px;color:var(--text-muted); }
+    .logout-btn {
+      width:100%;padding:11px;background:transparent;
+      border:1px solid var(--border-color);border-radius:10px;
+      color:var(--text-secondary);font-size:14px;font-weight:500;
+      cursor:pointer;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .logout-btn:hover { border-color:#ff4444;color:#ff4444; }
+
+    /* ── MAIN CONTENT ───────────────────────────── */
+    .main {
+      flex:1;margin-left:var(--sidebar-w);
+      padding:48px 48px 80px;min-height:100vh;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(0,245,255,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(191,0,255,0.05) 0%, transparent 50%),
+        var(--bg-primary);
+    }
+
+    /* ── PAGE HEADER ──────────────────────────── */
+    .page-header { margin-bottom:40px;animation:fadeUp 0.5s ease both; }
+    .page-title { font-size:38px;font-weight:800;margin-bottom:10px;
+      background:linear-gradient(135deg,#fff 40%,var(--neon-cyan));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .page-subtitle { color:var(--text-secondary);font-size:17px;line-height:1.6; }
+
+    /* ── TWO-COLUMN LAYOUT ──────────────────────── */
+    .content-grid { display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:start; }
+
+    /* ── CARDS ───────────────────────────────────── */
+    .card {
+      background:var(--glass-bg);backdrop-filter:blur(20px);
+      border:1px solid var(--glass-border);border-radius:22px;
+      padding:32px;animation:fadeUp 0.6s ease both;
+    }
+    .card:hover { border-color:rgba(0,245,255,0.2); }
+    .card-header { display:flex;align-items:center;gap:14px;margin-bottom:24px; }
+    .card-icon {
+      width:46px;height:46px;
+      background:linear-gradient(135deg,rgba(0,245,255,0.2),rgba(191,0,255,0.15));
+      border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;
+    }
+    .card-title { font-size:19px;font-weight:700; }
+
+    /* ── SKILLS TEXTAREA ────────────────────────── */
+    .skills-input-wrap { position:relative;margin-bottom:16px; }
+    #skills-input {
+      width:100%;padding:18px 20px;min-height:120px;resize:vertical;
+      background:var(--bg-secondary);border:2px solid var(--border-color);
+      border-radius:14px;color:var(--text-primary);font-size:15px;
+      font-family:inherit;line-height:1.6;outline:none;transition:border-color 0.25s;
+    }
+    #skills-input:focus { border-color:var(--neon-cyan);box-shadow:0 0 20px rgba(0,245,255,0.12); }
+    #skills-input::placeholder { color:var(--text-muted); }
+
+    .input-actions { display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap; }
+    .btn-sm {
+      padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;
+      cursor:pointer;border:none;transition:all 0.25s;display:inline-flex;align-items:center;gap:6px;
+    }
+    .btn-ghost { background:transparent;border:1px solid var(--border-color);color:var(--text-secondary); }
+    .btn-ghost:hover { border-color:var(--neon-cyan);color:var(--neon-cyan); }
+    .btn-demo  { background:rgba(0,245,255,0.1);color:var(--neon-cyan);border:1px solid rgba(0,245,255,0.25); }
+    .btn-demo:hover  { background:rgba(0,245,255,0.18); }
+
+    /* Live tag chips */
+    #live-tags { display:flex;flex-wrap:wrap;gap:8px;min-height:28px;margin-bottom:8px; }
+    .live-tag {
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 12px;border-radius:20px;font-size:13px;font-weight:500;
+      background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.25);color:var(--neon-cyan);
+    }
+    .live-tag button {
+      background:none;border:none;cursor:pointer;color:rgba(0,245,255,0.6);
+      font-size:16px;line-height:1;padding:0;
+    }
+    .live-tag button:hover { color:#ff4444; }
+
+    /* ── CATEGORY SELECTOR ──────────────────────── */
+    .mode-tabs { display:flex;gap:8px;margin-bottom:20px; }
+    .mode-tab {
+      flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;
+      cursor:pointer;transition:all 0.25s;border:1px solid var(--border-color);
+      background:transparent;color:var(--text-secondary);text-align:center;
+    }
+    .mode-tab.active {
+      background:linear-gradient(135deg,rgba(0,245,255,0.15),rgba(191,0,255,0.1));
+      border-color:rgba(0,245,255,0.3);color:var(--neon-cyan);
+    }
+
+    #category-cards {
+      display:grid;grid-template-columns:1fr 1fr;gap:8px;
+      max-height:320px;overflow-y:auto;padding-right:4px;
+    }
+    #category-cards::-webkit-scrollbar { width:4px; }
+    #category-cards::-webkit-scrollbar-track { background:transparent; }
+    #category-cards::-webkit-scrollbar-thumb { background:var(--border-color);border-radius:4px; }
+
+    .cat-btn {
+      display:flex;align-items:center;gap:8px;padding:10px 12px;
+      border-radius:10px;background:var(--bg-secondary);
+      border:1px solid var(--border-color);cursor:pointer;
+      font-size:13px;font-weight:500;color:var(--text-secondary);
+      text-align:left;transition:all 0.2s;
+    }
+    .cat-btn:hover {
+      border-color:var(--cat-color,var(--neon-cyan));
+      color:var(--cat-color,var(--neon-cyan));
+      background:rgba(0,245,255,0.05);
+    }
+    .cat-btn.active {
+      border-color:var(--cat-color,var(--neon-cyan));
+      background:rgba(0,245,255,0.1);
+      color:var(--text-primary);
+      box-shadow:0 0 14px rgba(0,245,255,0.15);
+    }
+    .cat-icon { font-size:16px;flex-shrink:0; }
+    .cat-name { font-size:12px;line-height:1.3; }
+
+    /* ── HINT CHIPS ─────────────────────────────── */
+    #hints-section { margin-top:24px;animation:fadeUp 0.4s ease both; }
+    #hints-section.hidden { display:none; }
+    #hints-cat-title { font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:12px; }
+    #hints-grid { display:flex;flex-wrap:wrap;gap:8px; }
+    .hint-chip {
+      padding:6px 13px;border-radius:20px;font-size:12px;font-weight:500;
+      cursor:pointer;transition:all 0.2s;user-select:none;
+    }
+    .hint-chip:hover { transform:translateY(-2px); }
+    .hint-chip.tier-core {
+      background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.3);color:var(--neon-cyan);
+    }
+    .hint-chip.tier-secondary {
+      background:rgba(191,0,255,0.1);border:1px solid rgba(191,0,255,0.3);color:#bf00ff;
+    }
+    .hint-chip.tier-bonus {
+      background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);color:var(--neon-green);
+    }
+    .legend { display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px; }
+    .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted); }
+    .dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+
+    /* ── ANALYZE BUTTON ─────────────────────────── */
+    #analyze-btn {
+      width:100%;margin-top:28px;padding:18px;border-radius:14px;
+      font-size:17px;font-weight:700;cursor:pointer;border:none;
+      background:linear-gradient(135deg,var(--neon-cyan),var(--neon-blue));
+      color:var(--bg-primary);
+      box-shadow:0 4px 28px rgba(0,245,255,0.35);
+      transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    #analyze-btn:hover:not(:disabled) {
+      transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,245,255,0.45);
+    }
+    #analyze-btn:disabled {
+      background:var(--bg-tertiary);color:var(--text-muted);cursor:not-allowed;
+      box-shadow:none;transform:none;
+    }
+
+    /* ── HOW IT WORKS ───────────────────────────── */
+    .steps-card { margin-top:24px; }
+    .step-list { display:flex;flex-direction:column;gap:14px; }
+    .step-item { display:flex;align-items:flex-start;gap:14px; }
+    .step-num {
+      min-width:28px;height:28px;border-radius:8px;
+      background:linear-gradient(135deg,rgba(0,245,255,0.2),rgba(191,0,255,0.15));
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:700;color:var(--neon-cyan);flex-shrink:0;
+    }
+    .step-text { font-size:13px;color:var(--text-secondary);line-height:1.6;padding-top:4px; }
+    .step-text strong { color:var(--text-primary); }
+
+    /* ── ANIMATIONS ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity:0;transform:translateY(18px); }
+      to   { opacity:1;transform:translateY(0); }
+    }
+
+    /* ── UPLOAD ZONE ─────────────────────────── */
+    .upload-zone {
+      position: relative; height: 260px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; border: 2px dashed rgba(255, 255, 255, 0.1);
+      margin: 20px; border-radius: 18px; transition: 0.3s;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .upload-zone.dragover {
+      border-color: var(--neon-cyan);
+      background: rgba(0, 245, 255, 0.05);
+      box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+    }
+    .upload-icon-pulse { font-size: 50px; margin-bottom: 10px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    
+    .spinner {
+      width: 50px; height: 50px; border: 4px solid rgba(0, 245, 255, 0.1);
+      border-top: 4px solid var(--neon-cyan); border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .check-icon { font-size: 40px; color: var(--neon-green); margin-bottom: 10px; }
+    @media (max-width:1100px) {
+      .content-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:768px) {
+      .sidebar { display:none; }
+      .main { margin-left:0;padding:24px 20px 60px; }
+      .page-title { font-size:28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ──────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">SkillGap</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="index.html"><span class="nav-icon">🏠</span>Home</a>
+    <a class="nav-item" href="job-descriptions.html"><span class="nav-icon">📜</span>Job Description</a>
+    <a class="nav-item active" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+    <a class="nav-item" href="result.html"><span class="nav-icon">📈</span>Results</a>
+  </nav>
+
+  <div id="backend-status" style="margin-top: 20px; padding: 12px; border-radius: 10px; font-size: 12px; display: flex; align-items: center; gap: 8px; background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid rgba(255, 68, 68, 0.2);">
+    <span style="width: 8px; height: 8px; border-radius: 50%; background: #ff4444; display: inline-block;"></span>
+    Backend Offline
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-badge">
+      <div class="user-avatar" id="user-avatar">U</div>
+      <div>
+        <div class="user-name" id="user-name">Guest</div>
+        <div class="user-email" id="user-email">user@example.com</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="window.location.href='login.html'">🚪 Logout</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ──────────────────────────────────────── -->
+<main class="main">
+  <div class="page-header">
+    <h1 class="page-title">Resume Analyzer Pro</h1>
+    <p class="page-subtitle">Upload your resume to instantly extract skills and discover your IT category fit.</p>
+  </div>
+
+<div class="content-grid">
+    <!-- LEFT: Uploads & Manual Input -->
+    <div class="left-col">
+        <!-- Resume Upload Area -->
+        <div class="card" style="margin-bottom: 32px; padding: 0; overflow: hidden; border-color: rgba(0, 245, 255, 0.3);">
+          <div class="upload-zone" id="upload-zone">
+            <div class="upload-content">
+                <div class="upload-icon-pulse">📤</div>
+                <h2 style="font-size: 24px; margin-bottom: 10px;">Your Resume</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">Supports PDF and DOCX. Max size 5MB.</p>
+                <button class="btn-sm btn-demo" onclick="document.getElementById('resume-upload').click()">
+                    Select File
+                </button>
+                <form id="resume-form" enctype="multipart/form-data">
+                    <input type="file" id="resume-upload" name="resume" hidden accept=".pdf,.docx">
+                </form>
+            </div>
+            <div class="upload-loading" id="upload-loading" style="display: none;">
+              <div class="spinner"></div>
+              <p style="margin-top: 20px; font-weight: 600; color: var(--neon-cyan);">Extracting skills from resume...</p>
+            </div>
+            <div class="upload-success" id="upload-success" style="display: none;">
+              <div class="check-icon">✓</div>
+              <p style="font-weight: 700; color: var(--neon-green); font-size: 18px;" id="uploaded-filename">Resume Extracted!</p>
+              <button class="btn-sm btn-ghost" style="margin-top: 15px;" onclick="resetUpload()">Upload New</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- JD Upload Zone -->
+        <div class="card" style="margin-bottom: 32px; padding: 0; overflow: hidden; border-color: rgba(191, 0, 255, 0.2);">
+          <div class="upload-zone" id="jd-upload-zone">
+            <div class="upload-content">
+                <div class="upload-icon-pulse">📄</div>
+                <h2 style="font-size: 24px; margin-bottom: 10px;">Job Description</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">Compare your resume with a specific job.</p>
+                <button class="btn-sm btn-demo" onclick="document.getElementById('jd-upload').click()" style="border-color: rgba(191, 0, 255, 0.4); color: #bf00ff;">
+                    Select File
+                </button>
+                <form id="jd-form" enctype="multipart/form-data">
+                    <input type="file" id="jd-upload" name="resume" hidden accept=".pdf,.docx">
+                </form>
+            </div>
+            <div class="upload-loading" id="jd-upload-loading" style="display: none;">
+              <div class="spinner"></div>
+              <p style="margin-top: 20px; font-weight: 600; color: var(--neon-purple);">Extracting JD requirements...</p>
+            </div>
+            <div class="upload-success" id="jd-upload-success" style="display: none;">
+              <div class="check-icon">✓</div>
+              <p style="font-weight: 700; color: var(--neon-green); font-size: 18px;" id="jd-upload-name">Job Description Extracted!</p>
+              <button class="btn-sm btn-ghost" style="margin-top: 15px;" onclick="resetJDUpload()">Upload New</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+              <div class="card-icon">✍️</div>
+              <h2 class="card-title">Or Manually Enter Skills</h2>
+            </div>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Separate skills with commas.</p>
+            <div class="skills-input-wrap">
+              <textarea id="skills-input" placeholder="e.g. Python, React, SQL..." aria-label="Enter your skills"></textarea>
+            </div>
+            <div id="live-tags"></div>
+            <div class="input-actions">
+              <button class="btn-sm btn-demo" id="demo-fill-btn">⚡ Demo Skills</button>
+              <button class="btn-sm btn-ghost" id="clear-skills-btn">🗑 Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: Controls & Info -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🎯</div>
+          <h2 class="card-title">Target Role</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+          Select a category for a targeted skill gap analysis.
+        </p>
+        <div class="select-wrap" style="margin-bottom: 20px;">
+          <select id="category-dropdown" style="
+            width:100%; padding:14px; border-radius:12px;
+            background:var(--bg-secondary); border:1px solid var(--border-color);
+            color:var(--text-primary); outline:none; font-size:14px; cursor:pointer;">
+            <option value="" disabled selected>Select Job Category...</option>
+            <option value="auto">Auto-Detect Best Fit</option>
+          </select>
+        </div>
+        <button id="analyze-btn" disabled>
+          🔍 Run Full Analysis
+        </button>
+      </div>
+
+      <!-- Skill Hints -->
+      <div id="hints-section" class="card hidden" style="margin-top:24px;">
+        <div id="hints-cat-title">Skills for Selected Category</div>
+        <div class="legend" style="margin-bottom:10px; margin-top: 10px;">
+          <span class="legend-item"><span class="dot" style="background:var(--neon-cyan)"></span>Core</span>
+          <span class="legend-item"><span class="dot" style="background:var(--neon-purple)"></span>Secondary</span>
+          <span class="legend-item"><span class="dot" style="background:var(--neon-green)"></span>Bonus</span>
+        </div>
+        <div id="hints-grid"></div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:12px;">Click to add.</p>
+      </div>
+
+      <!-- How It Works -->
+      <div class="card steps-card" style="margin-top:24px;">
+        <div class="card-header">
+          <div class="card-icon">💡</div>
+          <h2 class="card-title">How It Works</h2>
+        </div>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text"><strong>Upload or Enter</strong> your professional skills.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>Pick a target role</strong> to compare against.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>Get detailed results</strong> on gaps and certifications.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="data/job-categories.js"></script>
+<script src="engine/analyzer.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

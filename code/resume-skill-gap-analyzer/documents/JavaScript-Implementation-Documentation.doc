@@ -1,0 +1,240 @@
+RESUME SKILL GAP ANALYZER - JavaScript Implementation Documentation
+================================================================
+
+1. OVERVIEW
+--------------------------------------------------------------------------------
+This document explains the JavaScript implementation for the Resume Skill Gap
+Analyzer. The JS handles form validation, file upload, API simulation, and result
+display with skeleton loading animations.
+
+
+2. CONFIGURATION
+--------------------------------------------------------------------------------
+File: app.js contains configuration constants:
+
+const CONFIG = {
+    maxFileSize: 5 * 1024 * 1024,  // 5MB
+    allowedFileTypes: ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    allowedExtensions: ['.pdf', '.docx'],
+    apiDelay: 1500  // 1.5 second simulated API delay
+};
+
+- File size limit: 5MB
+- Accepted formats: PDF, DOCX
+- Simulated response delay: 1.5 seconds
+
+
+3. JOB CATEGORIES DATA
+--------------------------------------------------------------------------------
+JOB_CATEGORIES object stores all 14 job categories with:
+
+{
+    key: {
+        name: 'Display Name',
+        skills: ['Skill1', 'Skill2', ...],
+        icon: 'emoji'
+    }
+}
+
+Categories:
+1. software  - Software Development
+2. web      - Web Development
+3. mobile   - Mobile Development
+4. uiux     - UI/UX Design
+5. data     - Data Science
+6. aiml     - AI/ML
+7. cloud    - Cloud Computing
+8. security - Cybersecurity
+9. database - Database Engineering
+10. devops  - DevOps
+11. networking - Networking
+12. gaming  - Game Development
+13. qa      - QA/Testing
+14. pm      - Project Management
+
+Each category contains 10 required skills.
+
+
+4. UTILITY FUNCTIONS
+--------------------------------------------------------------------------------
+
+4.1 showSkeletonLoader()
+- Creates overlay with animated skeleton cards
+- Dynamically adds CSS styles
+- Shows "loading" state during API calls
+
+4.2 hideSkeletonLoader()
+- Removes skeleton overlay from DOM
+
+4.3 showError(message, containerId)
+- Displays error message in specified container
+- Auto-removes after 5 seconds
+
+4.4 simulateApiCall(data, delay)
+- Async function simulating API request
+- Shows skeleton loader during delay
+- Returns success response with timestamp
+
+
+5. FORM HANDLERS
+--------------------------------------------------------------------------------
+
+5.1 initLoginForm()
+- Handles login form submission
+- Basic validation: checks email/password not empty
+- Calls simulateApiCall() for auth
+- Redirects to dashboard on success
+
+5.2 initRegisterForm()
+- Handles registration form submission
+- Basic validation: checks name/email/password not empty
+- Calls simulateApiCall() for registration
+- Redirects to dashboard on success
+
+
+6. FILE UPLOAD HANDLER
+--------------------------------------------------------------------------------
+
+6.1 initFileUpload()
+- Handles file input change event
+- Processes drag-and-drop events
+- Validates file type and size
+
+File Validation:
+- Allowed types: application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document
+- Allowed extensions: .pdf, .docx
+- Max size: 5MB
+
+On Success:
+- Adds 'uploaded' class to upload area
+- Displays file name
+- Enables analyze button
+
+
+7. CATEGORY SELECTION HANDLER
+--------------------------------------------------------------------------------
+
+7.1 initCategorySelect()
+- Listens for category dropdown changes
+- Calls loadSkills() when category selected
+
+7.2 loadSkills(category)
+- Retrieves skills from JOB_CATEGORIES
+- Dynamically creates skill tag elements
+- Makes skills clickable for selection
+- Stores selected category globally
+
+
+8. ANALYZE RESUME HANDLER
+--------------------------------------------------------------------------------
+
+8.1 initAnalyzeButton()
+- Enables/disables button based on form completion
+- Calls analyzeResume() on click
+
+8.2 analyzeResume()
+- Collects uploaded file
+- Collects selected category and skills
+- Stores result in localStorage
+- Calls simulateApiCall() with analysis data
+- Redirects to result.html on completion
+
+
+9. RESULT PAGE HANDLER
+--------------------------------------------------------------------------------
+
+9.1 initResultPage()
+- Checks localStorage for analyzeResult
+- Redirects to dashboard if no data
+- Updates category name in result page
+
+
+10. INITIALIZATION
+--------------------------------------------------------------------------------
+
+Page-specific initialization via DOMContentLoaded:
+
+if (path.includes('login.html')) {
+    initLoginForm();
+} else if (path.includes('register.html')) {
+    initRegisterForm();
+} else if (path.includes('dashboard.html')) {
+    initCategorySelect();
+    initFileUpload();
+    initAnalyzeButton();
+} else if (path.includes('result.html')) {
+    initResultPage();
+}
+
+
+11. GLOBAL STORAGE
+--------------------------------------------------------------------------------
+Data stored in browser:
+
+localStorage:
+- analyzeResult: JSON string with analysis data
+    {
+        category: 'software',
+        categoryName: 'Software Development',
+        skills: ['Java', 'Python', ...],
+        timestamp: '2024-01-01T00:00:00.000Z'
+    }
+
+window global variables:
+- window.uploadedFile: File object
+- window.selectedCategory: String (category key)
+
+
+12. ERROR HANDLING
+--------------------------------------------------------------------------------
+Basic validation errors:
+- Empty form fields -> "Please fill in all fields"
+- Invalid file type -> "Please upload PDF or DOCX file"
+- File too large -> "File size must be less than 5MB"
+
+No backend - all API calls are simulated.
+
+
+13. SKELETON LOADING ANIMATION
+--------------------------------------------------------------------------------
+Custom CSS dynamically added to page:
+
+.skeleton-overlay - Full screen overlay
+.skeleton-card - Loading container
+.skeleton-line - Animated text placeholder
+.skeleton-box - Animated card placeholder
+
+Animation: shimmer effect using gradient background-position
+
+
+14. FILE STRUCTURE
+--------------------------------------------------------------------------------
+app.js - Main JavaScript file
+
+HTML files include app.js:
+- login.html
+- register.html
+- dashboard.html
+- result.html
+
+Each HTML calls appropriate init function on DOMContentLoaded.
+
+
+15. HOW IT WORKS
+--------------------------------------------------------------------------------
+User Flow:
+1. User logs in/register -> initLoginForm/initRegisterForm
+2. User uploads resume -> initFileUpload
+3. User selects category -> loadSkills, initCategorySelect
+4. User clicks Analyze -> analyzeResume
+5. API simulated with skeleton loader
+6. Data stored in localStorage
+7. User redirected to result page
+8. Result page reads localStorage and displays
+
+
+================================================================
+Document Version: 1.0
+Created: 2026-04-13
+Validation Level: Basic
+Loading Animation: Skeleton Screen

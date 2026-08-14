@@ -1,0 +1,32 @@
+# Semantic Similarity Engine: Technical Documentation
+
+This document explains the implementation of the **Machine Learning** component within the Skill Gap Analyzer, which measures the "semantic fit" of a resume beyond simple keyword matching.
+
+## 🔬 Methodology
+
+We use a **Vector Space Model (VSM)** to transform professional text into mathematical vectors for comparative analysis.
+
+### 1. Vectorization: TF-IDF
+We use **TF-IDF (Term Frequency-Inverse Document Frequency)** for text vectorization.
+- **Term Frequency (TF)**: Measures how frequently a term occurs in the resume.
+- **Inverse Document Frequency (IDF)**: Penalizes common English bridge words while boosting the "uniqueness" of technical terms (e.g., "Kubernetes" carries more weight than "Responsible").
+- **N-gram Range (1, 2)**: For high accuracy, we extract both unigrams (single words) and **Bigrams** (pairs of words). This allows the system to distinguish between "full" and "stack" vs. the contextually grouped "full stack."
+
+### 2. Similarity Metric: Cosine Similarity
+To determine how similar the resume is to an "Ideal Candidate Profile," we calculate the **Cosine Similarity** between their respective TF-IDF vectors.
+- This measures the *angular distance* between vectors, focusing on the orientation of the professional concepts rather than just document length.
+- A score of **100%** indicates a perfect semantic alignment of professional terminology and context.
+
+## 🔄 The "Ideal Profile" Synthesis
+
+Unlike keyword-only matching, our algorithm generates a dynamic **Contextual Target** based on current database requirements. 
+- It combines Core, Secondary, and Bonus skills into a naturally phrased "Reference Document."
+- The resume is then mathematically compared against this "Target Document" to see how well the candidate's professional narrative aligns with the role's semantic domain.
+
+## ⚖️ Integration into Scoring
+The resulting **Semantic Score** is fed into the final analysis engine alongside the Keyword Match Score. This provides a balanced view:
+- **Keyword Match**: Confirms technical proficiency.
+- **Semantic Score**: Confirms professional context and domain-specific vocabulary.
+
+---
+*Created by Antigravity — Machine Learning Engineer*

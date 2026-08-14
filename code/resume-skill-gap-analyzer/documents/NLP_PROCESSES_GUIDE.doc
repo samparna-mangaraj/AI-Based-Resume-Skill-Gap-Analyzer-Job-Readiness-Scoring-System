@@ -1,0 +1,30 @@
+NLP PROCESSES: TECHNICAL GUIDE
+==============================
+
+1. EXTRACTION
+-------------
+- PDF: Page-by-page text extraction.
+- DOCX: Paragraph traversal.
+- HTML: HTML sanitization and tag stripping.
+- TXT: UTF-8 normalization.
+
+2. CLEANING (LEVEL 2)
+---------------------
+The system removes 'noise' to focus on high-value keywords.
+- Process: Lowercase -> ASCII Normalization -> Punctuation Strip -> Whitespace Collapse.
+
+3. SKILL DISCOVERY
+------------------
+- We match 'Extracted Clean Text' against a dictionary of 1000+ IT skills.
+- We use boundary detection to avoid partial word matches.
+- Synonym mapping ensures that 'JS' and 'JavaScript' are treated as the same skill.
+
+4. WEIGHTED SCORING
+-------------------
+The system simulates a recruiter's priorities:
+- Core Skills: 60% of score.
+- Secondary Skills: 30% of score.
+- Bonus Skills: 10% of score.
+
+---
+Integration Complete.

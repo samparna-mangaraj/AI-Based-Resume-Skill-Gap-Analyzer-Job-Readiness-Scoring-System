@@ -1,0 +1,43 @@
+# Integrated Scoring System: Technical Documentation
+
+This document explains the final scoring architecture of the Skill Gap Analyzer, which integrates multi-layered data points to provide a professional career-readiness score.
+
+## 🧮 The Scoring Formula
+
+The final **Match Score** is calculated using a balanced multi-factor model:
+
+$$Score = (TechnicalMatch \times 0.5) + (SemanticFit \times 0.5) + \text{Professional Boost}$$
+
+### 1. Technical Skill Match (50% Weight)
+- This measures the direct overlap between the extracted skills and the job role's requirements.
+- It considers the **Tiered Hierarchy**: Core skills contribute significantly more than Bonus skills.
+
+### 2. Semantic Context Match (50% Weight)
+- Driven by the **ML Engine**, this measures the "professional narrative" of the resume.
+- It evaluates whether the candidate's industry vocabulary and phrasing align with the target field, capturing value even if specific keywords are missing.
+
+### 3. Professional Boost (Heuristics)
+To identify "Senior" vs. "Junior" candidates, we apply a heuristic boost based on extracted metrics:
+- **Experience Boost**: +0.5 points per year of experience (Capped at +5.0).
+- **Project Boost**: +0.2 points per project mentioned (Capped at +5.0).
+- *Benefit*: This allows a candidate with 10 years of experience to outrank a candidate with identical skills but 0 years of experience.
+
+## 📊 Score Classification
+
+Scores are categorized into professional tiers:
+- **90–100%**: 🏆 Expert Level (Ideal candidate)
+- **75–89%**: 💪 Senior Match (Strong candidate)
+- **60–74%**: 📈 Mid-Level Fit (Requires some upskilling)
+- **40–59%**: 🌱 Junior / Entry (Significant gaps present)
+- **<40%**: ⚠️ Poor Alignment (Not a match for this role)
+
+## 🔄 Dynamic Integration
+
+The scoring system is invoked at the end of the analysis pipeline:
+1. **Resume Parse**: Extract text and metrics.
+2. **Skill Extract**: Identify matching keywords.
+3. **ML Semantic Scan**: Compute vector similarity.
+4. **Final Integration**: Combine all scores and metrics into the final [ScoringSystem](file:///f:/satya%20project/code/resume-skill-gap-analyzer/backend/app/scoring_system.py) object and persist to the MySQL database.
+
+---
+*Created by Antigravity — System Design Expert*

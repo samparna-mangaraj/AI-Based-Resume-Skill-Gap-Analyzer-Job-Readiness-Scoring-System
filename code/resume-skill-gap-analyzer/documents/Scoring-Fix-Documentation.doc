@@ -1,0 +1,221 @@
+RESUME SKILL GAP ANALYZER - SCORING LOGIC FIX
+================================================================
+
+1. PROBLEM WITH OLD LOGIC
+--------------------------------------------------------------------------------
+The previous scoring system had critical flaws:
+
+1. ALLOWED IRRELEVANT MATCHES
+   - Graphic Designer resume scored high for Software Engineer
+   - Generic words like "project", "team", "work" counted as matches
+   - No category-specific filtering
+
+2. UNRESTRICTED SEMANTIC SCORING
+   - Semantic similarity could inflate scores regardless of skill match
+   - Example: 45% semantic → inflated final score even with 0 skills
+
+3. NO THRESHOLD ENFORCEMENT
+   - No minimum match threshold
+   - Could score 80%+ with almost no matching skills
+
+4. EDGE CASES NOT HANDLED
+   - Empty resume → unpredictable score
+   - Wrong category → misleading results
+
+
+2. NEW STRICT SCORING SYSTEM
+--------------------------------------------------------------------------------
+
+2.1 STRICT SKILL MATCHING
+   - Only skills defined in selected job category are checked
+   - All 14 categories have 10 specific skills each
+   - Generic words completely removed before matching
+
+2.2 GENERIC WORD FILTERING
+   Common words ignored:
+   - project, system, work, team, application
+   - experience, skills, knowledge, proficient
+   - years, developed, managed, created
+   - responsibility, collaboration, communication
+
+2.3 PARTIAL MATCH SUPPORT
+   Abbreviations → Full skill:
+   - JS → JavaScript
+   - TS → TypeScript
+   - ML → Machine Learning
+   - API → REST APIs
+   - AWS → AWS (cloud category only)
+
+2.4 SYNONYM EXPANSION
+   Synonyms map to canonical skills:
+   - DevOps → Docker, Kubernetes, CI/CD
+   - React → React.js
+   - Node → Node.js
+   - Swift → iOS development context
+
+2.5 MINIMUM THRESHOLD LOGIC
+   If skill_match < 20%:
+   - Minimum score: 10-25 (forced low)
+   - Semantic score: RESET TO 0
+   - No inflation from semantic similarity
+
+2.6 FINAL SCORING FORMULA
+   IF skill_match < 20%:
+       score = 10-25 (based on matched count)
+   ELSE:
+       score = (skill_match × 80%) + (semantic × 20%)
+   
+   Example calculations:
+   - 50% skill match + 45% semantic = 50×0.8 + 45×0.2 = 49%
+   - 10% skill match + 80% semantic = 10 + 0 = 10-25% (capped)
+
+
+3. SCORING LOGIC FLOW
+--------------------------------------------------------------------------------
+
+1. Input: resume_text, category, semantic_score
+2. Preprocess:
+   - Remove special characters
+   - Filter generic words
+   - Normalize to lowercase
+3. Check Edge Cases:
+   - Empty resume → score = 0
+   - No extracted words → score = 10-25
+   - No skill match → score = 10-25
+4. Match Skills:
+   - Check each required skill against normalized words
+   - Support partial and synonym matches
+5. Calculate:
+   - skill_match_percentage = (matched / total) × 100
+   - Apply threshold logic
+   - Calculate final score
+6. Output:
+   - matched_skills list
+   - missing_skills list
+   - skill_match_percentage
+   - final_score
+   - warnings (if any)
+
+
+4. TEST CASES & RESULTS
+--------------------------------------------------------------------------------
+
+TEST 1: Graphic Designer → Software Engineer (WRONG CATEGORY)
+--------------------------------------------------
+Resume: Adobe Photoshop, Figma, typography, UI design, team lead
+Matched: [] (no software skills)
+Skill Match: 0%
+Final Score: 10-25 (forced low)
+Status: ✓ CORRECT - Should be very low
+
+TEST 2: Software Developer → Software Engineer (CORRECT)
+-------------------------------------------------------
+Resume: Java, Python, JavaScript, C++, REST APIs, Git, Agile, SQL
+Matched: Java, Python, JavaScript, C++, Git, Agile, SQL
+Skill Match: 70%
+Final Score: 56% (70×0.8 + 55×0.2)
+Status: ✓ CORRECT - Should be high
+
+TEST 3: Web Developer → Data Science (MISMATCH)
+---------------------------------------------
+Resume: React, Angular, Node.js, TypeScript, HTML, CSS
+Matched: [] (no data science skills in web dev list)
+Skill Match: 0%
+Final Score: 10-25
+Status: ✓ CORRECT - Should be very low
+
+TEST 4: Partial Matches (JS, Node) → Web Development
+----------------------------------------------
+Resume: JS and Node, React front-end, TypeScript, REST APIs
+Matched: JavaScript, React, Node.js, TypeScript, REST APIs
+Skill Match: 50%
+Final Score: 50% (50×0.8 + 50×0.2)
+Status: ✓ CORRECT - Partial matches recognized
+
+TEST 5: Empty Resume
+-------------------
+Resume: (empty)
+Score: 0
+Status: ✓ CORRECT - Zero for empty
+
+
+5. IMPLEMENTATION DETAILS
+--------------------------------------------------------------------------------
+
+File: scoring_engine.py
+
+Classes:
+- ResumeScoringEngine: Main scoring engine class
+
+Methods:
+- preprocess_text(): Clean and filter resume text
+- normalize_word(): Apply synonym expansion
+- check_partial_match(): Support abbreviations
+- analyze_resume(): Main analysis function
+- _set_edge_case(): Handle edge cases
+- _calculate_strict_score(): Low match scoring
+- _calculate_final_score(): Normal scoring formula
+
+Functions:
+- analyze_resume(): Public API function
+- JOB_SKILLS: Dictionary of all category skills
+- SYNONYMS: Abbreviation mappings
+- GENERIC_WORDS: Words to ignore
+
+
+6. CATEGORY-SPECIFIC SKILLS
+--------------------------------------------------------------------------------
+
+Each category has exactly 10 required skills:
+
+software:    Java, Python, JavaScript, C++, Go, Rust, SQL, Git, Agile, Data Structures
+web:         HTML, CSS, JavaScript, React, Vue.js, Angular, Node.js, TypeScript, REST APIs, GraphQL
+mobile:      Swift, Kotlin, React Native, Flutter, iOS, Android, Firebase, REST APIs, UI/UX, App Store
+uiux:        Figma, Sketch, Adobe XD, Prototyping, User Research, Wireframing, Design Systems, Accessibility, Motion Design, Typography
+data:        Python, SQL, Tableau, Power BI, Statistics, Machine Learning, Data Visualization, ETL, Excel, Big Data
+aiml:        Python, TensorFlow, PyTorch, Neural Networks, NLP, Computer Vision, Scikit-learn, Keras, Deep Learning, MLOps
+cloud:       AWS, Azure, GCP, Docker, Kubernetes, Terraform, Serverless, Cloud Security, CI/CD, Linux
+security:    Network Security, Penetration Testing, CEH, CISSP, Firewalls, Encryption, SIEM, Risk Assessment, Compliance, Malware Analysis
+database:    SQL, MySQL, PostgreSQL, MongoDB, Redis, Database Design, Query Optimization, Replication, Backup, NoSQL
+devops:      Docker, Kubernetes, Jenkins, GitLab, CI/CD, Ansible, Terraform, Linux, Monitoring, Scripting
+networking:  TCP/IP, DNS, Load Balancing, Firewalls, VPN, Cisco, Network Security, Wireless, SDN, Troubleshooting
+gaming:      Unity, Unreal Engine, C#, C++, 3D Math, Physics, Shader Programming, Game Design, AI for Games, VR/AR
+qa:          Selenium, Jest, Test Planning, Manual Testing, Automation, API Testing, JIRA, Bug Tracking, Performance Testing, Agile
+pm:          Project Planning, Agile, Scrum, JIRA, Risk Management, Stakeholder Management, Budgeting, MS Project, Communication, Leadership
+
+
+7. DEBUG OUTPUT
+--------------------------------------------------------------------------------
+
+Result includes:
+
+{
+    "category": "software",
+    "matched_skills": ["Java", "Python", "JavaScript"],
+    "missing_skills": ["C++", "Go", "Rust", "SQL", "Git", "Agile", "Data Structures"],
+    "skill_match_percentage": 30.0,
+    "semantic_score": 0,
+    "final_score": 19.0,
+    "debug": {
+        "extracted_words_sample": ["java", "python", "javascript"],
+        "warnings": ["Very low skill match (30%)"]
+    }
+}
+
+
+8. KEY GUARDS AGAINST FALSE POSITIVES
+--------------------------------------------------------------------------------
+
+1. Generic word filter prevents common resume words from matching
+2. Category-specific skills only - no cross-category matches
+3. <20% match threshold forces low score
+4. Semantic reset when skill_match = 0
+5. Edge cases handled explicitly (empty, no match, wrong category)
+
+
+================================================================
+Document Version: 1.0
+Created: 2026-04-13
+Scoring: STRICT with threshold enforcement
+Partial Matches: YES (JS, Node, etc.)
+Synonyms: YES (ML, DevOps, etc.)

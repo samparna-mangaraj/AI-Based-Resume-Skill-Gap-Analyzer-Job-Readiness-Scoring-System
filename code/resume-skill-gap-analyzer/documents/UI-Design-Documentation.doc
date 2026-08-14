@@ -1,0 +1,165 @@
+RESUME SKILL GAP ANALYZER - UI Design Documentation
+================================================================
+
+1. IMPLEMENTATION STEPS
+--------------------------------------------------------------------------------
+The UI was implemented as a single-page application with four main views:
+
+Step 1: Login Page
+    - Email and password authentication form
+    - "Register" navigation link for new users
+    - Neon-styled card layout with gradient effects
+
+Step 2: Register Page
+    - Full name, email, password fields
+    - Account creation form
+    - Link back to login for existing users
+
+Step 3: Dashboard Page
+    - Resume upload area with drag-and-drop support
+    - Job category dropdown with all 14 categories
+    - Dynamic skill tags generation based on selection
+    - Analyze button to process resume
+
+Step 4: Result Page
+    - Circular score visualization with animation
+    - Progress bars for 4 skill categories
+    - Recommendation cards with priority tags
+
+
+2. LOGIC USED
+--------------------------------------------------------------------------------
+Navigation Logic:
+    - Single page application using display:none/show
+    - Each page has unique ID, activated via JavaScript
+    - Smooth fade-in animations on page transition
+
+Category-Skills Mapping:
+    - 14 job categories stored in JavaScript object
+    - Each category has 10 specific skills
+    - Skills rendered dynamically when category selected
+
+File Upload Logic:
+    - Hidden file input triggered by click
+    - Drag-and-drop event listeners added
+    - File name displayed on successful upload
+
+Score Calculation:
+    - CSS conic-gradient for circular progress
+    - --score CSS variable controls fill percentage
+    - Progress bar width controlled via style properties
+
+
+3. TECHNOLOGIES APPLIED
+--------------------------------------------------------------------------------
+Frontend:
+    - HTML5 for semantic structure
+    - CSS3 for styling (variables, gradients, animations)
+    - Vanilla JavaScript for interactivity
+    - Google Fonts (Inter) for typography
+
+Design Elements:
+    - CSS custom properties (variables) for theming
+    - Grid and Flexbox layouts
+    - CSS animations (@keyframes)
+    - Hover effects and transitions
+    - Backdrop filters
+
+Key Features:
+    - NEON color theme with cyan and purple accents
+    - DARK background (#0a0a0f)
+    - Card-based dashboard layout
+    - Modern sans-serif typography (Inter)
+
+
+4. ASSUMPTIONS MADE
+--------------------------------------------------------------------------------
+1. Target Users: IT professionals seeking career guidance
+2. Browser Support: Modern browsers with CSS3 and ES6
+3. File Formats: PDF and DOCX for resume upload
+4. File Size: Maximum 5MB
+5. Mobile Responsive: Basic support via media queries
+6. No Backend: Frontend-only demonstration
+7. Single Session: No persistent login state
+8. Static Categories: 14 predefined job categories
+
+
+5. COMPONENT STRUCTURE
+--------------------------------------------------------------------------------
+Color Palette:
+    - Primary Background: #0a0a0f
+    - Card Background: #15151f
+    - Neon Cyan (Primary): #00f5ff
+    - Neon Purple (Accent): #bf00ff
+    - Text Primary: #ffffff
+    - Text Secondary: #a0a0b0
+    - Border: #252535
+
+Main Components:
+    - Page Container (4 pages)
+    - Auth Card (login/register)
+    - Dashboard Card (upload + selection)
+    - Upload Area (drag-drop)
+    - Category Select (dropdown)
+    - Skill Tags (selectable)
+    - Score Circle (visualization)
+    - Progress Bars (4 categories)
+    - Recommendation Cards (3 cards)
+
+
+6. FILE STRUCTURE
+--------------------------------------------------------------------------------
+index.html - Complete UI implementation
+    - Inline CSS in <style> tag
+    - Inline JavaScript in <script> tag
+    - No external dependencies except Google Fonts
+
+
+7. HOW TO USE
+--------------------------------------------------------------------------------
+1. Open index.html in a modern web browser
+2. Navigate between Login/Register pages
+3. Select a job category from dropdown
+4. View and select relevant skills
+5. Click "Analyze Resume" to see results
+6. Review score and recommendations
+7. Click "New Analysis" to start over
+
+
+8. CUSTOMIZATION OPTIONS
+--------------------------------------------------------------------------------
+To modify colors, change CSS variables in :root:
+    --neon-cyan: #00f5ff; (change to any color)
+    --neon-purple: #bf00ff;
+
+To add new categories, add to categorySkills object in JavaScript
+
+To modify animations, adjust @keyframes definitions
+
+To change fonts, update Google Fonts import URL
+
+
+9. LIMITATIONS & FUTURE IMPROVEMENTS
+--------------------------------------------------------------------------------
+Current:
+    - Static sample data only
+    - No actual resume parsing
+    - No backend integration
+    - Basic mobile responsive
+
+Recommended Enhancements:
+    - PDF parsing with PDF.js
+    - Resume text extraction
+    - AI-powered skill matching
+    - User accounts database
+    - History tracking
+    - PDF export functionality
+    - More detailed analytics
+    - Social sharing options
+
+
+================================================================
+Document Version: 1.0
+Created: 2026-04-13
+UI Framework: Custom (No framework)
+Target Platform: Web Browser

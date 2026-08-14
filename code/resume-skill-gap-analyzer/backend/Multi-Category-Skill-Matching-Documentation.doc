@@ -1,0 +1,208 @@
+RESUME SKILL GAP ANALYZER - MULTI-CATEGORY SKILL MATCHING SYSTEM
+================================================================
+
+1. OVERVIEW
+--------------------------------------------------------------------------------
+Complete resume skill matching system with:
+- 14 job categories
+- Core vs Supporting skill classification
+- Synonym support (JS = JavaScript, etc.)
+- Category-based filtering
+- Strict scoring logic
+
+
+2. JOB CATEGORIES & SKILLS STRUCTURE
+--------------------------------------------------------------------------------
+
+2.1 Software Development
+Core: JavaScript, Python, Java, C++, React, Node.js, Django, APIs, DSA
+Supporting: SQL, MongoDB, Git, OOP
+
+2.2 Web Development
+Core: HTML, CSS, JavaScript
+Supporting: Bootstrap, Tailwind, SEO, Responsive Design
+
+2.3 Mobile Development
+Core: Kotlin, Java, Swift, Flutter, React Native
+Supporting: Firebase, APIs
+
+2.4 UI/UX Design
+Core: Figma, Adobe XD
+Supporting: Wireframing, Prototyping, User Research
+
+2.5 Data Science & Analytics
+Core: Python, R, SQL
+Supporting: Excel, Power BI, Tableau, Statistics
+
+2.6 AI / Machine Learning
+Core: Python, TensorFlow, PyTorch
+Supporting: NLP, Deep Learning
+
+2.7 Cloud Computing
+Core: AWS, Azure, GCP
+Supporting: Docker, Kubernetes, Linux
+
+2.8 Cybersecurity
+Core: Networking, Kali Linux
+Supporting: Metasploit, Cryptography
+
+2.9 Database Engineering
+Core: SQL (advanced), Database Design
+Supporting: Hadoop, Spark, ETL
+
+2.10 DevOps
+Core: Docker, Kubernetes, CI/CD
+Supporting: Bash, Python, Terraform
+
+2.11 Networking / IT Support
+Core: Networking (LAN/WAN), Linux
+Supporting: Troubleshooting, Windows
+
+2.12 Game Development
+Core: Unity, Unreal, C#, C++
+Supporting: Game Physics, Animation
+
+2.13 QA / Testing
+Core: Manual Testing, Selenium
+Supporting: Cypress, JIRA, Test Cases
+
+2.14 Project Management
+Core: Agile, Scrum
+Supporting: Jira, Trello, Communication
+
+
+3. SCORING LOGIC
+--------------------------------------------------------------------------------
+
+3.1 Core Skill Priority
+- Core skills have HIGH weight (10% per skill)
+- Supporting skills have MEDIUM weight (5% per skill)
+
+3.2 Base Score Rule
+IF at least ONE core skill matches:
+   Base Score = 50-60%
+
+IF no core skill matches:
+   Score = 0-20% ONLY
+
+3.3 Skill Match Boost
+- Each additional matched core skill: +10%
+- Each supporting skill: +5%
+
+3.4 Max Score
+- Cap score at 100%
+
+3.5 Semantic Control
+- Semantic similarity allowed ONLY if core skill matched
+- Otherwise semantic score = 0
+
+3.6 Final Scoring Formula
+IF core_match:
+   score = base_score + (core_matches x 10) + (support_matches x 5)
+ELSE:
+   score = 0-20
+
+
+4. SYNONYM SUPPORT
+--------------------------------------------------------------------------------
+Supported abbreviations and variations:
+- JS = JavaScript
+- Py = Python
+- API = REST APIs
+- React = React.js
+- Node = Node.js
+- ML = Machine Learning
+- DL = Deep Learning
+- NLP = Natural Language Processing
+- AWS/Azure/GCP = Cloud platforms
+- CI/CD = Jenkins, DevOps
+
+
+5. GENERIC WORDS REMOVED
+--------------------------------------------------------------------------------
+Words ignored during matching:
+project, system, team, work, application, experience,
+developed, created, managed, led, skills, knowledge,
+proficient, communication, design, build, implement, etc.
+
+
+6. OUTPUT FORMAT
+--------------------------------------------------------------------------------
+{
+    "category": "software",
+    "category_name": "Software Development",
+    "detected_skills": ["JavaScript", "Python", "React"],
+    "matched_core_skills": ["JavaScript", "Python", "React"],
+    "matched_supporting_skills": ["Git"],
+    "missing_core_skills": ["C++", "Django"],
+    "missing_supporting_skills": ["SQL", "MongoDB"],
+    "final_score": 85
+}
+
+
+7. TEST RESULTS
+--------------------------------------------------------------------------------
+
+TEST 1: Data Entry -> Data Science
+--------------------------------
+Resume: Excel, Spreadsheet experience
+Matched: Excel (supporting only)
+Core: [] (no Python/R/SQL)
+Score: 13/100
+Result: LOW (correct - no core data science skills)
+
+TEST 2: Software Developer -> Software Dev
+-----------------------------------------
+Resume: JavaScript, Python, Java, React, Node.js, Django, APIs, DSA, Git
+Matched: 7 core + 1 supporting
+Core: JavaScript, Python, Java, React, Node.js, Django, APIs
+Score: 100/100
+Result: HIGH (correct - multiple core skills)
+
+TEST 3: Graphic Designer -> Software Dev
+---------------------------------------
+Resume: Photoshop, Illustrator, Figma, design team lead
+Matched: [] (no software skills)
+Core: []
+Score: 0/100
+Result: VERY LOW (correct - wrong domain)
+
+TEST 4: Web Developer -> Web Dev
+--------------------------------
+Resume: HTML, CSS, JavaScript, Bootstrap, Tailwind, SEO, Responsive
+Matched: 3 core + 4 supporting
+Core: HTML, CSS, JavaScript
+Score: 95/100
+Result: HIGH (correct - all core + supporting)
+
+
+8. KEY FEATURES
+--------------------------------------------------------------------------------
+- Category-based matching only
+- Core skill priority enforcement
+- No false positives for wrong domains
+- Synonym expansion
+- Generic word filtering
+- Edge case handling (empty resume, no skills)
+
+
+9. API USAGE
+--------------------------------------------------------------------------------
+from app.skill_matching import analyze_resume
+
+result = analyze_resume(
+    resume_text="JavaScript Python React developer",
+    category="software",
+    semantic_score=50
+)
+
+print(result["final_score"])
+print(result["matched_core_skills"])
+
+
+================================================================
+Document Version: 1.0
+Created: 2026-04-13
+Synonyms: YES
+Skill Weights: FIXED
+Token Expiry: 60 days (implemented separately)

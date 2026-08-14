@@ -1,0 +1,34 @@
+SKILL GAP ANALYZER: TECHNICAL MASTER FILE
+=========================================
+
+1. SYSTEM OVERVIEW
+------------------
+The system is a production-grade AI recruiter tool using FastAPI, MySQL, and Scikit-Learn.
+
+2. MODULES
+----------
+A. DB MODULE: MySQL storage for Categories, Skills, and Results.
+B. NLP MODULE: Professional parser for PDF/DOCX/HTML/TXT with Level 2 cleaning.
+C. EXTRACTOR: Case-insensitive, strict-boundary skill identification.
+D. ML ENGINE: TF-IDF + Cosine Similarity for domain context analysis.
+E. SCORING: 50% technical + 50% semantic + Experience/Project boosts.
+F. RECOMMENDATIONS: Detailed project-based career roadmaps.
+
+3. SETUP COMMANDS
+-----------------
+1. pip install -r requirements.txt
+2. python -m app.seed
+3. uvicorn app.main:app
+
+4. FILE STRUCTURE
+-----------------
+- backend/app/database.py      (DB Config)
+- backend/app/models.py        (SQLAlchemy Models)
+- backend/app/parser.py        (NLP Parser)
+- backend/app/skill_extractor (Skill logic)
+- backend/app/semantic_engine  (ML Logic)
+- backend/app/scoring_system   (Decision Logic)
+- backend/app/recommendations  (Career Logic)
+
+---
+Master Guide Complete.

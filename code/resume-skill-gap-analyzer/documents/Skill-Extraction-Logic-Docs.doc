@@ -1,0 +1,32 @@
+# Expert NLP Skill Extraction: Technical Documentation
+
+This document explains the logic used to identify and extract relevant IT skills from processed resume text.
+
+## 🎯 Extraction Strategy
+
+We employ a **Case-Insensitive** and **Strict-Word** boundary matching strategy. This ensures high precision and prevents "False Positives" common in basic text searching.
+
+### 1. Master Dictionary Loading
+- The system dynamically queries the MySQL `skills` table to build a master dictionary.
+- This dictionary contains requirements for all 15 IT categories (Software Dev, Web, Cloud, etc.).
+- Benefit: Adding a new skill to the database automatically enables extraction support without code changes.
+
+### 2. Regex-Based Strict Matching
+- **Case-Insensitive**: Matches are performed using the `re.IGNORECASE` flag. "python", "Python", and "PYTHON" are all correctly identified.
+- **Word Boundaries (`\b`)**: We wrap every skill keyword in `\b` escape characters.
+  - *Correct Match*: "java" matches "Expert in Java programming".
+  - *Prevented Mismatch*: "java" **does not** match "Experienced in JavaScript" or "Using a database called Neo4j".
+
+### 3. Special Character Handling
+- Skills containing special characters (e.g., `C++`, `C#`, `.NET`) require custom Regex handling because symbols like `+` and `#` are not typically considered "word characters" by standard boundary checks.
+- Our extraction logic includes specific escape sequences and patterns to ensure these vital IT skills are captured accurately.
+
+## 🔄 Integration Flow
+
+1. **Clean Text Received**: The parser delivers a clean, lowercase string.
+2. **Global Scan**: The `SkillExtractor` scans the entire text against the master list of 300+ skills across 15 categories.
+3. **Deduplication**: Duplicate mentions are flattened into a unique set of skills.
+4. **Result**: The API returns a refined list of industry-standard skills found in the resume.
+
+---
+*Created by Antigravity — NLP Systems Engineer*

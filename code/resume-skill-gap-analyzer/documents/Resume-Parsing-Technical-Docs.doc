@@ -1,0 +1,35 @@
+# Resume Parsing System: Technical Documentation
+
+This document explains the implementation of the **Professional Resume Parsing API**, designed to provide high-fidelity text extraction and NLP-ready cleaning.
+
+## 🚀 Multi-Format Support
+
+The parser handles the following formats with native extraction logic:
+- **PDF**: Uses `PyPDF2` to traverse pages and extract stream-based text.
+- **DOCX**: Uses `python-docx` to iterate through document paragraphs and maintain character fidelity.
+- **HTML**: Uses `BeautifulSoup4` with custom filters to strip script/style tags and extract meaningful semantic text.
+- **TXT**: Native UTF-8 decoding with fallback error handling for varied encoding formats.
+
+## 🧹 NLP Cleaning Logic (Level 2: Normal)
+
+Extracted text undergoes a 4-stage cleaning pipeline to ensure "noise" doesn't interfere with skill matching:
+
+1. **Lowercase Conversion**: Standardizes the entire document to lowercase for case-insensitive matching.
+2. **Encoding Normalization**: Converts non-ASCII and special characters into standard ASCII to handle international resumes and special symbols.
+3. **Regex Punctuation Removal**: Removes all punctuation and special characters (e.g., bullets, separators, emojis) while preserving alphanumeric text.
+4. **Whitespace Optimization**: Collapses multiple spaces, tabs, and newlines into a single space, creating a "clean" tokenizable string.
+
+## 🛠️ Usage in API
+
+The parsing logic is encapsulated in the `ResumeParser` class. When a file is uploaded to `POST /api/v1/resume/upload`, the following flow occurs:
+1. File extension validation against the `settings` whitelist.
+2. Content reading and memory buffering.
+3. Call to `ResumeParser.parse(content, filename)`.
+4. Return of **Cleaned Content** and **Word Count** to the frontend for analysis.
+
+## 📈 Performance Considerations
+- All extraction happens in-memory using `io.BytesIO`, ensuring no temporary files are left on the server.
+- The Level 2 cleaning is performed using optimized regular expressions for sub-millisecond processing times even on large CVs.
+
+---
+*Created by Antigravity — NLP Systems Engineer*

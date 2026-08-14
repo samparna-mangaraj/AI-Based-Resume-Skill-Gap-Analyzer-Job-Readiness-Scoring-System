@@ -1,0 +1,32 @@
+# Career Recommendation System: Technical Documentation
+
+This document explains the implementation of the **Personalized Career Roadmap Engine** in the Skill Gap Analyzer.
+
+## 🎯 Engine Philosophy
+
+The system moves beyond simple "Learn X" statements by providing **Localized, Project-Based Advice**. The philosophy is that technical proficiency is best demonstrated through specialized portfolio construction rather than just certification.
+
+## 🏗️ Recommendation Logic
+
+### 1. Strategic Category Guidance
+Every result includes a "Strategic Path" based on the user's targeted job category (e.g., Software Development vs. DevOps).
+- *Goal*: Set the professional mindset (e.g., focusing on "Automation" for DevOps or "Accessibility" for Web Development).
+
+### 2. Detailed Skill Mapping
+For identified skill gaps, the system queries its **NLP Knowledge Base** to retrieve detailed project blueprints:
+- **Project-Specific**: Suggestions involve building particular apps or systems (e.g., "Build a serverless app for AWS" instead of just "Learn AWS").
+- **Sub-Topic Focus**: Highlights specific parts of a skill (e.g., for SQL, it highlights "Optimizing Queries and Indexing").
+
+### 3. Dynamic Priority Ranking
+Suggestions are ranked by "Recruiter Importance":
+- **High Priority**: Foundational gaps (e.g., Python, SQL, JS) that are blockers for most roles.
+- **Medium Priority**: Frameworks and auxiliary tools (e.g., Docker, React).
+
+## 🚀 Future Roadmap: Dynamic Content
+
+While the current system uses a localized "Expert Knowledge Base," the architecture is designed to support:
+- **LLM Integration**: To generate custom project ideas on the fly based on the user's current project history.
+- **Company-Specific Advice**: Mapping gaps to specific job descriptions from industry giants.
+
+---
+*Created by Antigravity — Recommendation Systems Expert*

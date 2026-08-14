@@ -1,0 +1,13 @@
+.venv/
+.sixth/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.vscode/
+*.log
+"New Microsoft Word Document.docx"
+nul
+*.docx
+*.rar

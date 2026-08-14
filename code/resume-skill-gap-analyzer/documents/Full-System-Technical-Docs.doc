@@ -1,0 +1,56 @@
+# Full System Architecture: Skill Gap Analyzer
+
+This document provides a birds-eye view of the **Unified Analysis Pipeline**, explaining how the various expert subsystems collaborate to deliver a final career-readiness report.
+
+---
+
+## 🏗️ 1. Orchestration Layer (`AnalysisService`)
+The system is orchestrated by a central service that ensures the data flows through the pipeline in a safe, logical sequence. Every request is tracked with **Detailed Logging** for debugging and auditing.
+
+## 🔄 2. The Unified Pipeline Flow
+
+### Phase A: Parsing & Metrification
+- **Extract**: The `ResumeParser` converts binary files (PDF/DOCX) into cleaned NLP-ready strings.
+- **Metrify**: We heuristically extract professional metrics (Years of Experience, Project Counts) to inform the final boost logic.
+
+### Phase B: Extraction & Domain Mapping
+- **Skill Extraction**: The `SkillExtractor` performs a case-insensitive, strict-boundary scan against the MySQL master dictionary.
+- **Domain Similarity**: The `SemanticMatcher` (ML) computes the Cosine Similarity between the candidate's professional vocabulary and the role's "Ideal Profile."
+
+### Phase C: Synthesis & Scoring
+- **Integrated Weighting**: The `ScoringSystem` combines the technical match (50%) and semantic fit (50%), then applies the experience/project boosts.
+- **Role Recommendations**: The `RecommendationEngine` maps detected skill gaps to detailed, project-based localized career roadmaps.
+
+## 🗄️ 3. Persistence & Storage
+- **Transactional Consistency**: Results are persisted to the `analysis_results` table using SQLAlchemy ORM.
+- **Data Model**: All complex results (matched skills, missing skills, roadmaps) are stored as JSON blobs for flexibility and lossless data retrieval.
+
+---
+
+## 🚀 4. API Specification
+
+### `POST /api/v1/analysis/analyze`
+**Request**:
+```json
+{
+  "resume_text": "...",
+  "category_id": 1
+}
+```
+
+**Response (Standard JSON)**:
+```json
+{
+  "analysis_id": 101,
+  "category": "Software Development",
+  "match_percentage": 84.5,
+  "match_level": "💪 Senior Match",
+  "matched_skills": ["Python", "AWS"],
+  "missing_skills": ["Docker"],
+  "recommendations": [...],
+  "metrics": {"years_of_experience": 10, "project_count": 20}
+}
+```
+
+---
+*Created by Antigravity — Full-Stack Backend Architect*

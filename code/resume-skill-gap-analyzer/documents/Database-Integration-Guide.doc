@@ -1,0 +1,39 @@
+DATABASE INTEGRATION DOCUMENTATION
+===================================
+
+System: Skill Gap Analyzer
+Architect: Backend Developer (Antigravity)
+
+1. OVERVIEW
+-----------
+The system now uses MySQL for dynamic data management. This replaces hardcoded constants, allowing for real-time updates to job roles, skills, and industry requirements without redeploying frontend code.
+
+2. STACK
+--------
+- Database: MySQL
+- Language: Python 3.x
+- Framework: FastAPI
+- ORM: SQLAlchemy
+- Driver: PyMySQL
+
+3. MODELS
+---------
+- JobCategory: Stores the 15+ IT job tracks with UI attributes (color, icon).
+- Skill: Stores tiered requirements (Core, Secondary, Bonus) linked to categories.
+- AnalysisResult: Stores the history of resume evaluations.
+
+4. DYNAMIC FETCHING
+-------------------
+The endpoint GET /api/v1/analysis/categories now queries the DB. If a new skill is added to the MySQL 'skills' table, it will immediately appear on the user dashboard.
+
+5. RESULTS STORAGE
+------------------
+Every analysis is now persisted in the 'analysis_results' table, enabling future features like career progress charts and historical comparisons.
+
+6. SETUP INSTRUCTIONS
+---------------------
+1. Configure credentials in backend/.env
+2. Run 'python -m app.seed' to create tables and populate initial data.
+
+---
+Technical Integration Complete.

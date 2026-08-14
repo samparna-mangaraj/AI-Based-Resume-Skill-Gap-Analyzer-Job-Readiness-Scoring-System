@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SkillGap Analyzer - The real-world recruiter screening tool to identify your IT skill gaps and boost your career.">
+    <title>SkillGap Analyzer — Identify, Match, Succeed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --glass-bg: rgba(21, 21, 31, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-pink: #ff00a8;
+            --neon-green: #00ff88;
+            --neon-blue: #0080ff;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+            --border-color: #252535;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; height: 80px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; box-shadow: 0 0 20px rgba(0, 245, 255, 0.35);
+        }
+        .logo-text { font-size: 24px; font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 40px; align-items: center; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 15px; transition: 0.3s; }
+        .nav-link:hover { color: var(--neon-cyan); }
+        .btn-nav {
+            padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+            color: var(--bg-primary); text-decoration: none; transition: 0.3s;
+        }
+        .btn-nav:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 245, 255, 0.4); }
+
+        /* ── HERO ── */
+        .hero {
+            padding: 180px 5% 100px; text-align: center; position: relative;
+            background: radial-gradient(circle at 50% 30%, rgba(0, 245, 255, 0.1), transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(191, 0, 255, 0.08), transparent 50%);
+        }
+        .hero-title {
+            font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.1; margin-bottom: 24px;
+            background: linear-gradient(to bottom, #fff, #a0a0b0);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-title span { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; }
+        .hero-subtitle { font-size: clamp(16px, 2vw, 20px); color: var(--text-secondary); max-width: 700px; margin: 0 auto 48px; line-height: 1.6; }
+        
+        .hero-btns { display: flex; gap: 20px; justify-content: center; }
+        .btn-hero {
+            padding: 18px 36px; border-radius: 14px; font-weight: 700; font-size: 17px;
+            text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-hero-primary { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue)); color: var(--bg-primary); box-shadow: 0 0 30px rgba(0, 245, 255, 0.3); }
+        .btn-hero-primary:hover { transform: scale(1.05); }
+        .btn-hero-outline { border: 2px solid var(--border-color); color: #fff; }
+        .btn-hero-outline:hover { border-color: var(--neon-purple); background: rgba(191, 0, 255, 0.05); }
+
+        /* ── FEATURES ── */
+        .features { padding: 100px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+        .feature-card {
+            background: var(--glass-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--glass-border);
+            text-align: center; transition: 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--neon-cyan); }
+        .feature-icon { font-size: 40px; margin-bottom: 24px; display: inline-block; }
+        .feature-card h3 { font-size: 22px; margin-bottom: 16px; }
+        .feature-card p { color: var(--text-secondary); line-height: 1.6; }
+
+        /* ── MOCKUP PREVIEW ── */
+        .preview { padding: 80px 5%; text-align: center; }
+        .preview-img {
+            max-width: 1000px; width: 100%; border-radius: 24px; border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-btns { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-wrap">
+            <div class="logo-icon">⚡</div>
+            <span class="logo-text">SkillGap</span>
+        </div>
+        <div class="nav-links">
+            <a href="job-descriptions.html" class="nav-link">Job Description</a>
+            <a href="login.html" class="nav-link">Login</a>
+            <a href="register.html" class="btn-nav">Get Started</a>
+            <div id="backend-status" style="padding: 6px 12px; border-radius: 20px; font-size: 11px; display: flex; align-items: center; gap: 6px; background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid rgba(255, 68, 68, 0.2); margin-left: 10px;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #ff4444; display: inline-block;"></span>
+                Backend Offline
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 class="hero-title">Decode Your Career Path.<br><span>Master the Gap.</span></h1>
+        <p class="hero-subtitle">The AI-driven analyzer that maps your skills against 15+ job categories using real-world recruiter logic & weighted scoring.</p>
+        <div class="hero-btns">
+            <a href="dashboard.html" class="btn-hero btn-hero-primary">Launch Analyzer 🔥</a>
+            <a href="register.html" class="btn-hero btn-hero-outline">Create Profile</a>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Recruiter Logic</h3>
+            <p>We use the same weighted criteria as top IT recruiters: 60% Core, 30% Secondary, 10% Bonus.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>Auto-Detection</h3>
+            <p>Not sure where you fit? Our multi-role comparison engine finds your best matching job role instantly.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💡</div>
+            <h3>Growth Path</h3>
+            <p>Identify missing skills and receive personalized recommendations to bridge the gap and land the job.</p>
+        </div>
+    </section>
+
+    <section class="preview">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Dashboard Preview" class="preview-img">
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>

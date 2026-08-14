@@ -1,0 +1,37 @@
+SYSTEM REFACTORING & INTEGRATION MASTER DOC
+===========================================
+
+1. SCHEMA REFACTORING
+--------------------
+- Extended 'job_categories' with N:1 relationships for 'roles' and 'certifications'.
+- Centralized 'master_recommendations' for role-level strategic advice.
+- Constraints: 3NF maintained, strictly additive.
+
+2. DATA TRANSFORMATION
+----------------------
+- Normalization: JavaScript, Python, AWS standardized across all records.
+- Deduplication: Script uses set-comparison for safe, idempotent seeding.
+
+3. LOGIC PRESERVATION
+---------------------
+- Scoring Engine: UNTOUCHED.
+- ML Engines: UNTOUCHED.
+- Match Percentage Accuracy: 100% PRESERVED.
+
+4. API ENHANCEMENT
+------------------
+- GET /categories: Updated to return Roles and Certification objects.
+- Compatibility: Existing consumers see no breakage; only additional data.
+
+5. SAMPLE API RESPONSE
+----------------------
+{
+  "id": 1,
+  "name": "Software Development",
+  "roles": ["Backend Developer", "Frontend Developer"],
+  "skills": {"core": ["JavaScript", "Python"], ...},
+  "certifications": [{"name": "AWS Certified Developer", "provider": "AWS"}]
+}
+
+---
+Refactoring Complete.

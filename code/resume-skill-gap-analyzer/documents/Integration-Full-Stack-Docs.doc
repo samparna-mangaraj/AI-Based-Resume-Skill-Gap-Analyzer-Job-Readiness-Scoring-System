@@ -1,0 +1,49 @@
+# System Integration & End-to-End Flow: Skill Gap Analyzer
+
+This document explains the full-stack architectural integration of the Resume Skill Matching system.
+
+---
+
+## 🏗️ 1. Architecture Overview
+
+The system is a decoupled **Full-Stack Application** where:
+- **Frontend**: A high-fidelity SPA (HTML/CSS/JS) handled user interaction and result visualization.
+- **Backend**: A FastAPI (Python) server handles complex PDF parsing, database operations, and skill-matching logic.
+- **Database**: MySQL stores the masterIT category definitions, skills, roles, and certifications.
+
+---
+
+## 🔄 2. Production Flow (End-to-End)
+
+### Step 1: User Input (Frontend)
+- The user uploads a binary **PDF** file via the `FormData` API.
+- The user selects a **Job Category** from a list dynamically fetched from the backend (`GET /categories`).
+- Frontend validates the input and enables the "Analyze" button.
+
+### Step 2: Analysis Request (FastAPI)
+- Frontend sends a `POST /analyze` request containing the `multipart/form-data` (binary file + category ID).
+- Backend validates the file format and size.
+
+### Step 3: Server-Side Processing
+1.  **PDF Parsing**: Using `PyPDF2`, the system extracts raw text from the binary buffer.
+2.  **Normalization**: The text is case-folded and punctuation is stripped to ensure high-precision keyword lookup.
+3.  **Skill Discovery**: The system fetches the master list for the selected category from MySQL.
+4.  **Strict Logic**: It performs a case-insensitive search for every job skill within the resume text.
+
+### Step 4: Scoring & Synthesis
+- **Formula**: `match_percentage = (matched_count / total_required_skills) * 100`.
+- The system identifies exactly which skills are **Matched** and which are **Missing**.
+
+### Step 5: Visualization (Frontend)
+- The backend returns a structured JSON payload.
+- Javascript renders the **Conic Progress Bar**, **Matched Skill Chips**, and **Missing Skill Alerts** dynamically.
+
+---
+
+## 🛡️ 3. Safety & Optimization
+
+- **Static Serving**: The FastAPI backend is configured to serve the frontend files directly, eliminating CORS issues in production.
+- **Error Boundaries**: Comprehensive `try-catch` blocks on both ends ensure that invalid PDFs or network drops are conveyed clearly to the user via UI Toast messages.
+
+---
+*Created by Antigravity — Senior Full-Stack Architect*

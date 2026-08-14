@@ -1,0 +1,180 @@
+RESUME SKILL GAP ANALYZER - BACKEND SETUP DOCUMENTATION
+================================================================
+
+1. PROJECT OVERVIEW
+--------------------------------------------------------------------------------
+FastAPI backend for Resume Skill Gap Analyzer.
+- Framework: FastAPI
+- Server: Uvicorn
+- Python: 3.12
+- OS: Windows
+
+
+2. PROJECT STRUCTURE
+--------------------------------------------------------------------------------
+backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI application
+│   ├── config.py           # Settings (Pydantic)
+│   └── routes/
+│       ├── __init__.py
+│       ├── auth.py         # Authentication endpoints
+│       ├── resume.py       # Resume upload endpoints
+│       └── analysis.py    # Analysis endpoints
+├── uploads/                # File storage (created on runtime)
+├── .env                    # Environment variables
+├── requirements.txt        # Python dependencies
+└── README.md             # Setup commands
+
+
+3. SETUP STEPS (WINDOWS)
+--------------------------------------------------------------------------------
+
+Step 1: Open PowerShell and navigate to backend
+```powershell
+cd F:\satya project\code\resume-skill-gap-analyzer\backend
+```
+
+Step 2: Create virtual environment
+```powershell
+python -m venv venv
+```
+
+Step 3: Activate virtual environment
+```powershell
+.\venv\Scripts\Activate
+```
+
+Step 4: Install dependencies
+```powershell
+pip install -r requirements.txt
+```
+
+Step 5: Run the server
+```powershell
+python -m app.main
+```
+
+Server will start at: http://localhost:8000
+
+
+4. API ENDPOINTS
+--------------------------------------------------------------------------------
+
+Base Endpoints:
+- GET / - Welcome message
+- GET /health - Health check
+
+Authentication (POST):
+- /api/v1/auth/register - Register new user
+- /api/v1/auth/login - Login user
+- /api/v1/auth/logout - Logout user
+- GET /api/v1/auth/me - Get current user
+
+Resume (POST/GET/DELETE):
+- POST /api/v1/resume/upload - Upload resume file
+- GET /api/v1/resume/{id} - Get resume by ID
+- DELETE /api/v1/resume/{id} - Delete resume
+
+Analysis (POST/GET):
+- POST /api/v1/analysis/analyze - Analyze resume
+- GET /api/v1/analysis/categories - Get job categories
+- GET /api/v1/analysis/history - Get analysis history
+
+
+5. TECHNOLOGIES USED
+--------------------------------------------------------------------------------
+- FastAPI: Web framework
+- Uvicorn: ASGI server
+- Pydantic: Data validation
+- python-multipart: File uploads
+- PyPDF2: PDF parsing (ready)
+- python-docx: DOCX parsing (ready)
+
+
+6. REQUEST/RESPONSE EXAMPLES
+--------------------------------------------------------------------------------
+
+Register:
+Request:
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+}
+Response:
+{
+    "access_token": "user_1_token",
+    "token_type": "bearer",
+    "user": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com"
+    }
+}
+
+Analyze Resume:
+Request:
+{
+    "resume_text": "Java Python JavaScript developer with SQL and Git",
+    "category": "software"
+}
+Response:
+{
+    "category": "software",
+    "category_name": "Software Development",
+    "matched_skills": ["Java", "Python", "JavaScript", "Git", "SQL"],
+    "missing_skills": ["C++", "Go", "Rust", "Agile", "Data Structures"],
+    "skill_match_percentage": 50.0,
+    "semantic_score": 50.0,
+    "final_score": 50.0,
+    "recommendations": [...]
+}
+
+
+7. INTEGRATION WITH FRONTEND
+--------------------------------------------------------------------------------
+Update JavaScript in frontend to call backend API:
+
+// Replace simulateApiCall in app.js
+async function simulateApiCall(data, delay = 1500) {
+    const response = await fetch('http://localhost:8000/api/v1/analysis/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            resume_text: data.fileName,
+            category: data.category
+        })
+    });
+    return response.json();
+}
+
+
+8. PRODUCTION NOTES
+--------------------------------------------------------------------------------
+- Change SECRET_KEY in .env
+- Use database (PostgreSQL/MySQL)
+- Hash passwords with bcrypt
+- Use JWT tokens
+- Configure CORS origins
+- Add authentication middleware
+- Use cloud storage (S3/GCS)
+- Add rate limiting
+
+
+9. TESTING
+--------------------------------------------------------------------------------
+API Documentation (Swagger UI):
+- http://localhost:8000/docs
+- http://localhost:8000/redoc
+
+Health Check:
+- http://localhost:8000/health
+
+
+================================================================
+Document Version: 1.0
+Created: 2026-04-13
+Framework: FastAPI
+Server: Uvicorn

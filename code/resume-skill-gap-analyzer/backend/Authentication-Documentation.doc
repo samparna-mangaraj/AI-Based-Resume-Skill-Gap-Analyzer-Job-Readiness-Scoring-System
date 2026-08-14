@@ -1,0 +1,148 @@
+RESUME SKILL GAP ANALYZER - AUTHENTICATION SYSTEM
+================================================================
+
+1. OVERVIEW
+--------------------------------------------------------------------------------
+Complete authentication system with:
+- Password hashing (bcrypt)
+- JWT tokens (60 day expiry)
+- Refresh token support
+- Protected routes
+
+
+2. TECHNOLOGIES
+--------------------------------------------------------------------------------
+- bcrypt: Password hashing (industry standard)
+- python-jose: JWT token generation/decode
+- FastAPI: HTTPBearer for protected routes
+
+
+3. SECURITY FEATURES
+--------------------------------------------------------------------------------
+
+3.1 Password Hashing
+- Algorithm: bcrypt with automatic salt
+- Cost factor: Default (12 rounds)
+- Stored: Full hash (not encrypted password)
+
+3.2 JWT Tokens
+- Algorithm: HS256
+- Secret: From settings.SECRET_KEY
+- Expiry: 60 days
+- Claims: sub (user_id), email, exp
+
+3.3 Refresh Tokens
+- Separate from access token
+- Same expiry (60 days)
+- Can be used to generate new access token
+
+
+4. API ENDPOINTS
+--------------------------------------------------------------------------------
+
+POST /api/v1/auth/register
+Request:
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+}
+Response:
+{
+    "access_token": "eyJhbGc...",
+    "refresh_token": "eyJhbGc...",
+    "token_type": "bearer",
+    "expires_in": 60
+}
+
+POST /api/v1/auth/login
+Request:
+{
+    "email": "john@example.com",
+    "password": "password123"
+}
+Response:
+{
+    "access_token": "eyJhbGc...",
+    "refresh_token": "eyJhbGc...",
+    "token_type": "bearer",
+    "expires_in": 60
+}
+
+POST /api/v1/auth/refresh
+Request:
+{
+    "refresh_token": "eyJhbGc..."
+}
+Response:
+{
+    "access_token": "new_token...",
+    "refresh_token": "new_refresh...",
+    "token_type": "bearer",
+    "expires_in": 60
+}
+
+GET /api/v1/auth/me (Protected)
+Headers: Authorization: Bearer <access_token>
+Response:
+{
+    "id": "abc123...",
+    "name": "John Doe",
+    "email": "john@example.com"
+}
+
+POST /api/v1/auth/logout
+Response:
+{"message": "Logged out successfully"}
+
+
+5. CODE STRUCTURE
+--------------------------------------------------------------------------------
+
+4.1 app/security.py
+- hash_password(password): Hash password using bcrypt
+- verify_password(plain, hashed): Verify password
+- create_access_token(data, expiry): Create JWT access token
+- decode_access_token(token): Decode and verify JWT
+- create_refresh_token(data): Create refresh token
+
+
+4.2 app/routes/auth.py
+- Dependencies:
+  - get_current_user(): Verify JWT and return user
+- Protected routes use: Depends=get_current_user
+
+
+6. USAGE IN FRONTEND
+--------------------------------------------------------------------------------
+
+Store tokens:
+localStorage.setItem('access_token', response.access_token);
+localStorage.setItem('refresh_token', response.refresh_token);
+
+Include in requests:
+fetch('/api/v1/analysis/analyze', {
+    headers: {
+        'Authorization': `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+    }
+});
+
+
+7. PRODUCTION RECOMMENDATIONS
+--------------------------------------------------------------------------------
+- Use database (PostgreSQL/MySQL) instead of in-memory store
+- Add token blacklist for logout
+- Implement rate limiting
+- Add email verification
+- Use HTTPS only
+- Store SECRET_KEY in environment variables
+- Add refresh token rotation
+- Add 2FA support
+
+
+================================================================
+Document Version: 1.0
+Created: 2026-04-13
+Token Expiry: 60 days
+Security Level: Standard (JWT + bcrypt)

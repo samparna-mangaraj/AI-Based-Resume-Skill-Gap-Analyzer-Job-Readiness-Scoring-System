@@ -1,0 +1,38 @@
+PROJECT SETUP & MIGRATION GUIDE
+==============================
+
+I. PREREQUISITES
+----------------
+- Python 3.8+
+- MySQL Server (XAMPP/WAMP/Native)
+- Modern Web Browser
+
+II. BACKEND CONFIGURATION
+-------------------------
+1. Folder: /backend
+2. Action: Install dependencies
+   Command: pip install -r requirements.txt
+3. File: .env
+   Action: Update DB_HOST, DB_USER, DB_PASSWORD to match your local system.
+
+III. DATABASE SETUP (MYSQL)
+---------------------------
+1. Ensure MySQL service is running.
+2. Command (from /backend folder):
+   python -m app.seed
+3. This creates 'skillgap_db' and populates 15 IT categories and skills.
+
+IV. RUNNING THE SYSTEM
+----------------------
+1. Start Backend:
+   uvicorn app.main:app --reload --port 8000
+2. Start Frontend:
+   Open /index.html in any browser.
+
+V. TROUBLESHOOTING
+------------------
+- If "Access Denied" for MySQL, update .env with correct credentials.
+- Ensure the Backend is running before clicking "Analyze" on the Dashboard.
+
+---
+End of Document.
